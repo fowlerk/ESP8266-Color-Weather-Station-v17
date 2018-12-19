@@ -1795,11 +1795,11 @@ void drawWeatherStationAttributions() {
 
   //  Temporary code to hold attribution display to allow code uploading during development
 
-  bool isTouched = ts.touched();
-  while (!isTouched) {
-    delay(10);
-    isTouched = ts.touched();
-  }
+  //bool isTouched = ts.touched();
+  //while (!isTouched) {
+  //  delay(10);
+  //  isTouched = ts.touched();
+  //}
 
 }
 
