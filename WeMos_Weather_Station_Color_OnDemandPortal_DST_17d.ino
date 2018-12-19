@@ -1791,10 +1791,10 @@ void drawWeatherStationAttributions() {
   tft.setTextColor(ILI9341_CYAN);
   currTextColor = ILI9341_CYAN;
   
-  //delay(5000);
+  delay(5000);
 
   //  Temporary code to hold attribution display to allow code uploading during development
-
+  //
   //bool isTouched = ts.touched();
   //while (!isTouched) {
   //  delay(10);
