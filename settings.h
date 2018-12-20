@@ -61,9 +61,10 @@ char FormattedHumidity[10];
 // HOSTNAME for OTA update
 // #define HOSTNAME "ESP8266-OTA-"
 String OTAHostName = "ESP8266-OTA-";            // Changed to be unique from config portal hostname, 28-Jan-2018, DKF
-
 String configPortalHostname;                    // Moved from main source to settings, 28-Jan-2018, DKF
 const char* configPortalPassword = "portal-pass";
+
+const char* WiFiHost = "ESPWeather";            // Host name for station
 
 int activeAlerts;                   // for number of active weather alerts
 bool isNight = false;               // for flagging if it is nighttime
@@ -98,8 +99,7 @@ const uint8_t MAX_FORECASTS = 15;
 
 //const boolean IS_METRIC = false;
 
-// Sign up here to get an API key: https://docs.thingpulse.com/how-tos/openweathermap-key/
-char OPEN_WEATHER_MAP_APP_ID[33] = "OWM App ID (key)";
+char OPEN_WEATHER_MAP_APP_ID[33] = "OWM App ID";
 //char WUNDERGROUND_LANGUAGE[4] = "EN";
 /*
 Arabic -> ar, Bulgarian -> bg, Catalan -> ca, Czech -> cz, German -> de, Greek -> el,
@@ -110,14 +110,19 @@ Portuguese -> pt, Romanian -> ro, Russian -> ru, Swedish -> se, Slovak -> sk,
 Slovenian -> sl, Spanish -> es, Turkish -> tr, Ukrainian -> ua, Vietnamese -> vi,
 Chinese Simplified -> zh_cn, Chinese Traditional -> zh_tw.
 */
+//String OPEN_WEATHER_MAP_LANGUAGE = "en";
 char OPEN_WEATHER_MAP_LANGUAGE[4] = "en";
+//char WUNDERGROUND_COUNTRY[4] = "US";
+//char WUNDERGROUND_CITY[20] = "KY/40223";
 /*
 Go to https://openweathermap.org/find?q= and search for a location. Go through the
 result set and select the entry closest to the actual location you want to display 
 data for. It'll be a URL like https://openweathermap.org/city/2657896. The number
 at the end is what you assign to the constant below.
  */
+//String OPEN_WEATHER_MAP_LOCATION_ID = "4299276";
 char OPEN_WEATHER_MAP_LOCATION_ID[10] = "4299276";          // Louisville, KY, US
+//String DISPLAYED_CITY_NAME = "Louisville";
 char DISPLAYED_CITY_NAME[30] = "Louisville";
 char TZ_CITY[30] = "Louisville";
 char MID_PANEL_DELAY[3] = "6";                          // Added 26-Jan-2018, DKF
@@ -130,8 +135,8 @@ uint8_t restartMin = 0;
 uint8_t heapThreshold = 5120;                           // Free heap limit, used to trigger restart when heap gets low; 01-Mar-2018, DKF
 
 //Thingspeak Settings
-//const String THINGSPEAK_CHANNEL_ID = "67284";
-//const String THINGSPEAK_API_READ_KEY = "L2VIW20QVNZJBLAK";
+//const String THINGSPEAK_CHANNEL_ID = "XXXXX";
+//const String THINGSPEAK_API_READ_KEY = "XXXXXXXXXXXXXXXX";
 
 //  Various time constants used for updating
 const int UPDATE_INTERVAL_SECS = 10 * 60;                // Update current observations every 10 minutes

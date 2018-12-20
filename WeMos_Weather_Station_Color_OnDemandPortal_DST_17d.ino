@@ -321,16 +321,17 @@ Modified by DK Fowler ... 14-Mar-2018
   config portal was initiated, but essentially cancelled via booting the ESP without entering credentials again.
 
 Modified by DK Fowler ... 12->19-Dec-2018  
-	This is a major re-write in order to change the data source from Weather Underground to Open Weather Map.
-	This was necessitated due to IBM (now owner of WU) removing no-cost access to the WU data.
-	
-	Unfortunately the data provided by Open Weather Map is a MUCH-reduced dataset of what was provided by 
-	WU.  It does not include text-based forecasts, weather warnings/alerts, and much of the detailed info
-	that was provided and displayed in prior releases of this code.
-	
-	This version utilizes the standard weather station library written by Daniel Eichorn (and Marcel at ThingPulse).
-	Note that this is a rushed-conversion to beat the end-of-year deadline at which time IBM will no longer provide free
-	access to WU data, and has therefore not been thoroughly tested.
+  This is a major re-write in order to change the data source from Weather Underground to Open Weather Map.
+  This was necessitated due to IBM (now owner of WU) removing no-cost access to the WU data.
+  
+  Unfortunately the data provided by Open Weather Map is a MUCH-reduced dataset of what was provided by 
+  WU.  It does not include text-based forecasts, weather warnings/alerts, and much of the detailed info
+  that was provided and displayed in prior releases of this code.
+  
+  This version utilizes the standard weather station library written by Daniel Eichorn (and Marcel at ThingPulse).
+  Note that this is a rushed-conversion to beat the end-of-year deadline at which time IBM will no longer provide free
+  access to WU data, and has therefore not been thoroughly tested.
+  
 */
 
 #include <FS.h>
@@ -573,7 +574,9 @@ void setup() {
   
   drawWeatherStationAttributions();   // Display attributions including WU logo at startup...
 
-  WiFi.mode(WIFI_STA); // Force to station mode because if device was switched off while in access point mode it will start up next time in access point mode.
+  WiFi.mode(WIFI_STA);        // Force to station mode because if device was switched off while in access point mode it will start up next time in access point mode.
+  WiFi.hostname(WiFiHost);    // Added 19-Dec-2018 to resolve DHCP issues after connecting?
+
   unsigned long startedAt = millis();
   Serial.print("After waiting ");
   tft.fillScreen(ILI9341_BLACK);
@@ -588,14 +591,16 @@ void setup() {
   Serial.print(waited/1000);
   Serial.print(" secs in setup() connection result is ");
   Serial.println(connRes);
+  WiFi.printDiag(Serial);
   if (WiFi.status()!=WL_CONNECTED){
     Serial.println("Failed to connect, finishing setup anyway.");
   } else {
     Serial.print("Connected...local ip: ");
-  
     Serial.println(WiFi.localIP());
+    Serial.print("SSID:  "); Serial.println(WiFi.SSID());
     tft.fillScreen(ILI9341_BLACK);
     ui.drawString(120, 160, "Connected...");
+    ui.drawString(120, 178, "SSID " + (String(WiFi.SSID()) ));
     delay(1000);
   }
   
@@ -727,7 +732,7 @@ void loop() {
     ui.drawString(120, 160, "Auto-restart time");
     delay(2000);            // Pause to show restart message
     
-    ESP.reset();
+    ESP.restart();          // Modified by DK Fowler ... 20-Dec-2018, from ESP.reset in order to do a "cleaner" restart
     delay(5000);
   }
 
@@ -746,7 +751,7 @@ void loop() {
     ui.drawString(120, 160, "free memory");
     delay(2000);            // Pause to show restart message
     
-    ESP.reset();
+    ESP.restart();        // Modified by DK Fowler ... 20-Dec-2018, from ESP.reset in order to do a "cleaner" restart
     delay(5000);
     
   }
@@ -840,6 +845,11 @@ void updateData() {
   Serial.printf("UTC Offset:  %d\n", UTC_OFFSET);
 
   configTime(UTC_OFFSET * 3600, 0, NTP_SERVERS);
+  while(!time(nullptr)) {
+    Serial.print("#");
+    delay(100);
+  }
+
   drawProgress(66, "Updating conditions...");
 
   // calculate for time calculation how much the dst class adds.
@@ -1043,7 +1053,7 @@ void updateAstronomyData() {
   astronomy = nullptr;
 
   // Testing...
-  //SunMoonCalc(time(nullptr), 38.2718404, -85.5763783);
+  //SunMoonCalc(time(nullptr));
   //Serial.print("####Moon rise:  "); Serial.println(Moon.rise);
   //Serial.print("####Moon set:   "); Serial.println(Moon.set);
   
@@ -1770,7 +1780,7 @@ void drawSeparator(uint16_t y) {
    //tft.drawFastHLine(10, y, 240 - 2 * 10, 0x4228);
 }
 
-// display the Weather Underground logo and other attributions at startup
+// display the Open Weather Map logo and other attributions at startup
 void drawWeatherStationAttributions() {
   tft.fillScreen(ILI9341_BLACK);
   tft.setFont(&Droid_Sans_12);
@@ -1794,7 +1804,7 @@ void drawWeatherStationAttributions() {
   delay(5000);
 
   //  Temporary code to hold attribution display to allow code uploading during development
-  //
+
   //bool isTouched = ts.touched();
   //while (!isTouched) {
   //  delay(10);
@@ -3089,7 +3099,8 @@ void startWebConfigPortal() {
       }
 
     }
-    ESP.reset(); // This is a bit crude. For some unknown reason webserver can only be started once per boot up 
+    //  Modified by DK Fowler ... 20-Dec-2018, from ESP.reset in order to do a "cleaner" restart
+    ESP.restart(); // This is a bit crude. For some unknown reason webserver can only be started once per boot up 
                  // so resetting the device allows to go back into config mode again when it reboots.
     delay(5000);
     
