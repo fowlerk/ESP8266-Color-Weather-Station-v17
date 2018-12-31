@@ -22,7 +22,7 @@ Changes from the prior release regarding touch-screen functions:
 * a touch to the current conditions (weather icon / temperature) region will bring up the day / night forecast for today (removed*)
 * a touch to any of the forecast icons for the 9-day forecast will bring up the day / night forecast for that date (removed*; now 3 forecast displays per day for 5 days included in the scrolling mid-panel)
 * a long touch (>4-5 secs) to the time display region will enter configuration mode (previously triggered via a double-reset of the ESP) (still available*)
-* a long touch (>4-5 secs) to the current conditions region (weather icon / temperature) will initiate the screen calibration routine again (removed* for now)
+* a long touch (>4-5 secs) to the forecast region (date / weather icon / temperature) will initiate the screen calibration routine again (still available*)
 * a long touch (>4-5 secs) to the bottom panel region will bring up a detailed ESP status screen, showing heap, WiFi connection info, last reset error condition, etc. (adapted from Daniel Eichorn...thanks Dani!) (still available*)
 
 All of these touch displays return to the normal "rotating" screens by touching the screen again.

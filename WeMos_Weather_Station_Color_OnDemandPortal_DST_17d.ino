@@ -331,6 +331,12 @@ Modified by DK Fowler ... 12->19-Dec-2018
   This version utilizes the standard weather station library written by Daniel Eichorn (and Marcel at ThingPulse).
   Note that this is a rushed-conversion to beat the end-of-year deadline at which time IBM will no longer provide free
   access to WU data, and has therefore not been thoroughly tested.
+
+Modified by DK Fowler ... 31-Dec-2018
+  Added additional code around the checks for invalid data returned from OWM.  Previously, the code continued to rapidly retry until valid data was returned,
+  which resulted in a continuous loop condition if the data was never returned.  Now, if invalid data is detected, a retry will occur only after waiting 10 seconds,
+  and after 10 retry attempts, the ESP will restart.  This should allow manual initiation of the configuration portal for instance, if the source of the error
+  is an invalid configuration.  Messages are also displayed on the screen and serial port to indicate the retry attempts.
   
 */
 
@@ -450,6 +456,11 @@ uint8_t moonAge = 0;
 //DHT dht(DHTPIN, DHTTYPE);
 float humidity = 0.0;
 float temperature = 0.0;
+
+// Counters for error-retry attempts for data...added 31-Dec-2018, DKF
+byte invalidCurrCondCnt = 0;
+byte invalidAstroCnt = 0;
+byte invalidForecastsCnt = 0;
 
 // Instantiate tickers for updating current conditions, forecast, and astronomy info
 volatile int forecastTimer  = 0;      // Part of workaround for ticker timer limit
@@ -916,11 +927,27 @@ void refreshCurrentConditions() {
 //     readyForWeatherUpdate = false;
 //  }
 
+  // Check for icon set to "unknown" or returned length of 0...if so, assume bad data.
+  //    Added by DK Fowler ... 31-Dec-2018
   if ( (getMeteoconIcon(currentWeather.icon) == "unknown" ) || (strlen(getMeteoconIcon(currentWeather.icon)) == 0) ) {
-     Serial.println("Invalid current conditions...attempting to update...");
-     readyForWeatherUpdate = true;
+    if (invalidCurrCondCnt > 10) {
+      Serial.println("Invalid current conditions retry count exceeded...restarting...");
+      drawProgress(100, "Retries exceeded");
+      delay(1000);
+      drawProgress(100, "Restarting...");
+      delay(2000);
+      ESP.restart();
+      delay(2000);
+    } else {
+      invalidCurrCondCnt++;
+      Serial.println("Invalid current conditions...attempting to update...");
+      drawProgress(100, "Invalid conditions"); 
+      readyForWeatherUpdate = true;
+      delayAndCheckTouch(10000);     // delay 10 seconds before continuing
+    }
   } else {
      readyForWeatherUpdate = false;
+     invalidCurrCondCnt = 0;
   }
 
 //** Check to see if we have valid astronomy data.  If not, set the flag to update these values.
@@ -930,11 +957,27 @@ void refreshCurrentConditions() {
 //     readyForAstronomyUpdate = true;
 //  }
 
-//  Check to see if we have valid astronomy data.  If not, set the flag to update these values.
-  if ( (currentWeather.sunrise == 0) && 
-       (currentWeather.sunset  == 0) ) {
-     Serial.println("Invalid astronomy data...attempting to update...");
-     readyForAstronomyUpdate = true;
+  //  Check to see if we have valid astronomy data.  If not, set the flag to update these values.
+  //    Added by DK Fowler ... 31-Dec-2018
+  if ( ( (moonData.phase < 0) || (moonData.phase > 8) ) || ( (moonData.illumination < 0.0) || (moonData.illumination > 100.0) ) ) {
+    if (invalidAstroCnt > 10) {
+      Serial.println("Invalid astronomy data retry count exceeded...restarting...");
+      drawProgress(100, "Retries exceeded");
+      delay(1000);
+      drawProgress(100, "Restarting...");
+      delay(2000);
+      ESP.restart();
+      delay(2000);
+    } else {
+      invalidAstroCnt++;
+      Serial.println("Invalid astronomy data...attempting to update...");
+      drawProgress(100, "Invalid astro data"); 
+      readyForAstronomyUpdate = true;
+      delayAndCheckTouch(10000);     // delay 10 seconds before continuing
+    }
+  } else {
+     readyForAstronomyUpdate = false;
+     invalidAstroCnt = 0;
   }
 
   readyForMidPanelUpdate = true;                // Update mid-panel since progress bar overwrites this.
@@ -1038,6 +1081,29 @@ void updateForecastData() {
      readyForForecastUpdate = false;    
   //}
 
+  // Check first icon in forecast data to see if it is "unknown" or the returned length is 0; if so, assume bad data.
+  //    Added by DK Fowler ... 31-Dec-2018
+  if ( (getMeteoconIcon(forecasts[0].icon) == "unknown" ) || (strlen(getMeteoconIcon(forecasts[0].icon)) == 0) ) {
+    if (invalidForecastsCnt > 10) {
+      Serial.println("Invalid forecasts retry count exceeded...restarting...");
+      drawProgress(100, "Retries exceeded");
+      delay(1000);
+      drawProgress(100, "Restarting...");
+      delay(2000);
+      ESP.restart();
+      delay(2000);
+    } else {
+      invalidForecastsCnt++;
+      Serial.println("Invalid forecasts data...attempting to update...");
+      drawProgress(100, "Invalid forecasts"); 
+      readyForForecastUpdate = true;
+      delayAndCheckTouch(10000);     // delay 10 seconds before continuing
+    }
+  } else {
+     readyForForecastUpdate = false;
+     invalidForecastsCnt = 0;
+  }
+
 }
 
 void updateAstronomyData() {
@@ -1053,7 +1119,7 @@ void updateAstronomyData() {
   astronomy = nullptr;
 
   // Testing...
-  //SunMoonCalc(time(nullptr));
+  //SunMoonCalc(time(nullptr), 38.2718404, -85.5763783);
   //Serial.print("####Moon rise:  "); Serial.println(Moon.rise);
   //Serial.print("####Moon set:   "); Serial.println(Moon.set);
   
