@@ -59,7 +59,7 @@ All of these touch displays return to the normal "rotating" screens by touching 
 Library / Core Referenced | Version | Description | Link
 ------------------ | ------- | ----------- | ----
 **Arduino IDE** | 1.8.9 | Arduino IDE | <https://www.arduino.cc/en/Main/Software>
-**esp8266 core** | 2.5.2 | ESP8266 board definitions | <https://arduino-esp8266.readthedocs.io/en/2.5.2/installing.html>
+**ESP8266 core** | 2.5.2 | ESP8266 board definitions | <https://arduino-esp8266.readthedocs.io/en/2.5.2/installing.html>
 **<FS.h>** | 2.5.2 | Part of ESP8266 core, SPIFFS filesystem support | <https://arduino-esp8266.readthedocs.io/en/2.5.2/installing.html>
 **<Adafruit_GFX.h>** | 1.3.4 | Adafruit's core graphics library | <https://github.com/adafruit/Adafruit-GFX-Library>
 **<Adafruit_ILI9341.h>** | 1.2.0 | Adafruit's ILI9341 LCD hardware-specific library | <https://github.com/adafruit/Adafruit_ILI9341>
