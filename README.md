@@ -51,31 +51,33 @@ All of these touch displays return to the normal "rotating" screens by touching 
 **Note that I have not tested the NodeMCU pin references, but from what I understand these are the same as for the WeMos D1 mini.  Verify and test these at your own risk!**  Also, note that some of these require more than one connection to the same pin.  Though this can be accomplished a number of ways, I highly recommend get some of the WeMos prototyping boards (if you are using this ESP variant) and soldering the connections directly to this board, then slipping it over the pin headers on the WeMos itself.  This also allows a good location for soldering the capacitor if you elect to use it.
 
 
-##  Contributed Libraries (and links)
+##  Contributed Libraries / Core / IDE (and links)
 
 (*** Note there are a few changes from v15 ***)
 
 
-Library Referenced | Description | Link
------------------- | ----------- | ----
-**<FS.h>** | Part of ESP8266 core, SPIFFS filesystem support | 
-**<Adafruit_GFX.h>** | Adafruit's core graphics library | <https://github.com/adafruit/Adafruit-GFX-Library>
-**<Adafruit_ILI9341.h>** | Adafruit's ILI9341 LCD hardware-specific library | <https://github.com/adafruit/Adafruit_ILI9341>
-**<SPI.h>** | Part of ESP8266 core, used for DHT temperature readings if used
-**<math.h>** | Part of Arduino core, advanced math functions used for calculating wind-chill/heat-index
-**<XPT2046_Touchscreen.h>** | XPT2046 library for touch-screen controller by Paul Stoffregen | <https://github.com/PaulStoffregen/XPT2046_Touchscreen>
-**<WiFiManager.h>** | WiFi Manager library by Tzapu | <https://github.com/tzapu/WiFiManager>
-**<ArduinoJson.h>** | JSON library by Bblanchon | <https://github.com/bblanchon/ArduinoJson>
-**<JsonListener.h>** | JSON streaming parser by Squix78 | <https://github.com/squix78/json-streaming-parser>
-**<OpenWeatherMapCurrent.h>** | Weather Underground client library by Squix78 - current conditions | <https://github.com/squix78/esp8266-weather-station>
-**<OpenWeatherMapForecast.h>** | Weather Underground client library by Squix78 - 5-day forecast | <https://github.com/squix78/esp8266-weather-station>
-**<Astronomy.h>** | Astronomy client library by Squix78 - sunrise/sest, moon illumination, age, phase calcuations | <https://github.com/squix78/esp8266-weather-station>
-**<SunMoonCalc.h>** | (not currently used - maybe for future moonrise/set calcs?)
-**<WundergroundClient.h>** | (*** No longer used ***) | <https://github.com/squix78/esp8266-weather-station>
-**<simpleDSTadjust.h>**	| Simple daylight-savings time adjustment by Neptune | <https://github.com/neptune2/simpleDSTadjust>
-**"TimeZone.h"** | Time zone conversion library by JChristensen | <https://github.com/JChristensen/Timezone>
-**"DHT.h"** | Adafruit's DHT sensor library | <https://github.com/adafruit/DHT-sensor-library>
-**<Adafruit_Sensor.h>** | Adafruit's Unified Sensor library | <https://github.com/adafruit/Adafruit_Sensor>
+Library / Core Referenced | Version | Description | Link
+------------------ | ------- | ----------- | ----
+**Arduino IDE** | 1.8.9 | Arduino IDE | <https://www.arduino.cc/en/Main/Software>
+**esp8266 core** | 2.5.2 | ESP8266 board definitions | <https://arduino-esp8266.readthedocs.io/en/2.5.2/installing.html>
+**<FS.h>** | 2.5.2 | Part of ESP8266 core, SPIFFS filesystem support | <https://arduino-esp8266.readthedocs.io/en/2.5.2/installing.html>
+**<Adafruit_GFX.h>** | 1.3.4 | Adafruit's core graphics library | <https://github.com/adafruit/Adafruit-GFX-Library>
+**<Adafruit_ILI9341.h>** | 1.2.0 | Adafruit's ILI9341 LCD hardware-specific library | <https://github.com/adafruit/Adafruit_ILI9341>
+**<SPI.h>** | 2.5.2 | Part of ESP8266 core, used for DHT temperature readings if used | <https://arduino-esp8266.readthedocs.io/en/2.5.2/installing.html>
+**<math.h>** | 1.6.23 | Part of Arduino core, advanced math functions used for calculating wind-chill/heat-index
+**<XPT2046_Touchscreen.h>** | 1.2.0 | XPT2046 library for touch-screen controller by Paul Stoffregen | <https://github.com/PaulStoffregen/XPT2046_Touchscreen>
+**<WiFiManager.h>** | 0.14.0 | WiFi Manager library by Tzapu | <https://github.com/tzapu/WiFiManager>
+**<ArduinoJson.h>** | 5.13.4 | JSON library by Bblanchon | <https://github.com/bblanchon/ArduinoJson>
+**<JsonListener.h>** | 1.0.5 | JSON streaming parser by Squix78 | <https://github.com/squix78/json-streaming-parser>
+**<OpenWeatherMapCurrent.h>** | 1.6.6 | ESP8266 Weather Station client library by Squix78 - current conditions | <https://github.com/squix78/esp8266-weather-station>
+**<OpenWeatherMapForecast.h>** | 1.6.6 | ESP8266 Weather Station client library by Squix78 - 5-day forecast | <https://github.com/squix78/esp8266-weather-station>
+**<Astronomy.h>** | 1.6.6 | ESP8266 Weather Station Astronomy client library by Squix78 - sunrise/set, moon illumination, age, phase calcuations | <https://github.com/squix78/esp8266-weather-station>
+**<SunMoonCalc.h>** | 1.6.6 | ESP8266 Weather Station sun/moon calculations (not currently used - maybe for future moonrise/set calcs?) | <https://github.com/squix78/esp8266-weather-station>
+**<WundergroundClient.h>** | | (*** No longer used ***) | <https://github.com/squix78/esp8266-weather-station>
+**<simpleDSTadjust.h>**	| 1.2.0 | Simple daylight-savings time adjustment by Neptune | <https://github.com/neptune2/simpleDSTadjust>
+**"TimeZone.h"** | 1.2.2 | Time zone conversion library by JChristensen | <https://github.com/JChristensen/Timezone>
+**"DHT.h"** | 1.3.0 | Adafruit's DHT sensor library | <https://github.com/adafruit/DHT-sensor-library>
+**<Adafruit_Sensor.h>** | 1.0.2 | Adafruit's Unified Sensor library | <https://github.com/adafruit/Adafruit_Sensor>
 
 **Note 1:**  This release now utilizes ThingPulse's (squix78's) ESP8266 Weather Station library, and no longer requires inclusion of my customized version (see v15 for details)
 
